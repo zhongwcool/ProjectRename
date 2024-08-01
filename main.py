@@ -64,11 +64,11 @@ def get_version_number(exe_file):
 
 def print_hi(file_path):
     # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {file_path}')  # Press Ctrl+F8 to toggle the breakpoint.
+    print(f'待重命名文件: {file_path}')  # Press Ctrl+F8 to toggle the breakpoint.
 
     # 检查文件是否存在
     if not os.path.exists(file_path):
-        print(f"Error: The file {file_path} does not exist.")
+        print(f"{file_path}文件不存在")
         total_duration = 100  # 10 seconds duration for the progress bar
         countdown_progress_bar(total_duration, direction='right_to_left')
     else:
@@ -103,6 +103,21 @@ def print_hi(file_path):
         print("The file has been renamed to: " + new_name)
 
 
+def create_hello_file(filename):
+    with open(filename, 'w') as file:
+        file.write("hello.exe")  # 可以写入你想指定的默认内容
+
+
+def read_target_filename_from_file(filename):
+    try:
+        with open(filename, 'r') as file:
+            # 读取文件的第一行作为目标文件名
+            return file.readline().strip()
+    except FileNotFoundError:
+        # 如果文件不存在，返回 None
+        return None
+
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     # 确保至少有一个文件被拖拽到了程序上
@@ -119,6 +134,21 @@ if __name__ == '__main__':
         if not all_files_valid:
             print('请只拖拽 .exe 文件到该程序上。')
             countdown_progress_bar(10, direction='right_to_left')
+    elif len(sys.argv) == 1:
+        hello_file = 'Magic.txt'
+
+        # 尝试从 hello.txt 文件读取目标文件名
+        target_filename = read_target_filename_from_file(hello_file)
+
+        if target_filename is None:  # 文件不存在
+            create_hello_file(hello_file)  # 如果不存在，创建文件
+            print(f'请在{hello_file}中写上希望重命名的文件，例如：hello.exe')
+            print('你也可以直接拖拽目标文件到本文件上')
+            countdown_progress_bar(10, direction='right_to_left')
+        else:
+            print(f"目标文件名已从 {hello_file} 读取: {target_filename}")
+            # 你的其他代码逻辑，可以使用 target_filename 变量...
+            print_hi(target_filename)
     else:
         print('未检测到拖拽的文件，请拖拽 .exe 文件到该程序上。')
         countdown_progress_bar(10, direction='right_to_left')
