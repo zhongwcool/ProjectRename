@@ -27,4 +27,12 @@ pip install pywin32
 pyinstaller --onefile --name Magic --icon app.ico main.py
 ```
 
+### 其他
+
+#### 1.如何更新pip
+
+```shell
+python -m pip install --upgrade pip
+```
+
 ![](https://raw.githubusercontent.com/zhongwcool/ProjectRename/main/Assets/app-logo.png)
