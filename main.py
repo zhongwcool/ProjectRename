@@ -1,53 +1,7 @@
 import os
 import sys
-import time
 
 from win32api import GetFileVersionInfo, LOWORD, HIWORD
-
-# Unicode 块字符
-BLOCK_CHARS = ['█', '▉', '▊', '▋', '▌', '▍', '▎', '▏']
-
-
-def countdown_progress_bar(total_duration, bar_length=40, direction='left_to_right'):
-    def _print_progress_bar(remaining):
-        # 计算剩余时间比例
-        progress_ratio = remaining / total_duration
-        # 全块进度块的个数
-        full_blocks = int(progress_ratio * bar_length)
-        # 确定进度条中剩余部分所用的Unicode字符的索引
-        partial_block_index = int((progress_ratio * bar_length - full_blocks) * len(BLOCK_CHARS))
-        # 根据方向构建进度条
-        if direction == 'left_to_right':
-            # 顺滑消失在左侧的效果
-            bar = BLOCK_CHARS[0] * full_blocks
-            if full_blocks < bar_length:
-                bar += BLOCK_CHARS[partial_block_index]
-            bar += ' ' * (bar_length - full_blocks - 1)
-        elif direction == 'right_to_left':
-            # 顺滑消失在右侧的效果
-            bar = ' ' * (bar_length - full_blocks - 1)
-            if full_blocks < bar_length:
-                bar = BLOCK_CHARS[7 - partial_block_index] + bar
-            bar = BLOCK_CHARS[0] * full_blocks + bar
-        # 剩余时间的秒数
-        time_str = f'{int(remaining):02d}s'
-        sys.stdout.write(f'\r[{bar}] {time_str} remaining')
-        sys.stdout.flush()
-
-    start_time = time.time()
-    _print_progress_bar(total_duration)
-    # 一直倒计时直到时间为0
-    while True:
-        elapsed_time = time.time() - start_time
-        remaining_time = total_duration - elapsed_time
-        if remaining_time <= 0:
-            break
-        _print_progress_bar(remaining_time)
-        time.sleep(0.1)  # 此处也可调整来改变刷新频率
-
-    # 倒计时结束时确保进度条是空的，并打印信息
-    _print_progress_bar(0)
-    sys.stdout.write('\rDone!\n')
 
 
 def get_version_number(exe_file):
@@ -58,11 +12,10 @@ def get_version_number(exe_file):
         return HIWORD(ms), LOWORD(ms), HIWORD(ls), LOWORD(ls)
     except Exception as e:  # Instead of 'except:', use 'except Exception as e:'
         print(f"An exception occurred: {e}")
-        time.sleep(100)
         return 0, 0, 0, 0
 
 
-def print_hi(file_path):
+def rename_exe_with_version(file_path):
     # Use a breakpoint in the code line below to debug your script.
     print(f'待重命名文件: {file_path}')  # Press Ctrl+F8 to toggle the breakpoint.
 
@@ -116,8 +69,21 @@ def read_target_filenames_from_file(filename):
         return []
 
 
+def print_hi():
+    exe_name = os.path.basename(sys.argv[0])
+    version0 = get_version_number(exe_name)
+    version_str0 = "{}.{}.{}".format(*version0)
+    box_width = 50
+    info_str = f"{exe_name} v{version_str0}"
+    print("-" * (box_width + 2))
+    print(f"|{info_str:^{box_width}}|")
+    print("-" * (box_width + 2))
+
+
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
+    print_hi()
+
     # 确保至少有一个文件被拖拽到了程序上
     if len(sys.argv) > 1:
         all_files_valid = True
@@ -127,11 +93,12 @@ if __name__ == '__main__':
                 print(f'错误: 不支持的文件类型 - {file}')
                 all_files_valid = False
             else:
-                print_hi(file)
+                rename_exe_with_version(file)
 
         if not all_files_valid:
             print('请只拖拽 .exe 文件到该程序上。')
-            countdown_progress_bar(10, direction='right_to_left')
+            # 按任意键退出
+            input("按任意键退出...")
     elif len(sys.argv) == 1:
         hello_file = 'Magic.txt'
 
@@ -139,12 +106,11 @@ if __name__ == '__main__':
         targets = read_target_filenames_from_file(hello_file)
 
         for target in targets:
-            print_hi(target)
+            rename_exe_with_version(target)
 
-        total_duration = 100  # 10 seconds duration for the progress bar
-        countdown_progress_bar(total_duration, direction='right_to_left')
+        input("按任意键退出...")
     else:
         print('未检测到拖拽的文件，请拖拽 .exe 文件到该程序上。')
-        countdown_progress_bar(10, direction='right_to_left')
+        input("按任意键退出...")
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

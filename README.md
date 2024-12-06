@@ -27,6 +27,12 @@ pip install pywin32
 pyinstaller --onefile --name Magic --icon app.ico main.py
 ```
 
+如果需要在exe文件名中添加版本号、版权、公司等版本信息，可以使用`--version-file`参数，例如：
+
+```shell
+pyinstaller --onefile --version-file version.txt --name Magic --icon app.ico main.py
+```
+
 ### 其他
 
 #### 1.如何更新pip
