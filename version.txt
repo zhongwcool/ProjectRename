@@ -32,12 +32,12 @@ VSVersionInfo(
         '040904B0',
         [StringStruct('CompanyName', 'zhong Alex'),
         StringStruct('FileDescription', 'Magic Application'),
-        StringStruct('FileVersion', '1.1.0.0'),
+        StringStruct('FileVersion', '1.2.0.0'),
         StringStruct('InternalName', 'Magic'),
         StringStruct('LegalCopyright', '© zhong Alex. All rights reserved.'),
         StringStruct('OriginalFilename', 'Magic.exe'),
         StringStruct('ProductName', 'Magic'),
-        StringStruct('ProductVersion', '1.1.0.0')])
+        StringStruct('ProductVersion', '1.2.0.0')])
       ]),
     VarFileInfo([VarStruct('Translation', [1033, 1200])])
   ]

@@ -1,4 +1,14 @@
-hello.exe
-hello1.exe
-hello2.exe
-hello3.exe
+# 工作路径配置
+# 格式：work_path=路径
+work_path=D:\work\PycharmProjects\ProjectRename\test_exe
+
+# 版本号段数配置（1-4段，默认4段）
+# 格式：segments=段数
+# 例如：segments=2 表示只显示前2段版本号（如：1.2）
+segments=2
+
+# 目标文件列表（可选，如果指定了工作路径，将搜索该路径下的所有exe文件）
+# hello.exe
+# hello1.exe
+# hello2.exe
+# hello3.exe
