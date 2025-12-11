@@ -61,22 +61,29 @@ def create_hello_file(filename):
 
 def is_processed_file(filename, segments=4):
     """
-    检查文件是否已经被处理过（格式：Hello_x.x.x.x.exe 或 Hello_x.x.x.x.exe）
-    支持1-4段版本号，支持多种分隔符或直接连接
+    检查文件是否已经被处理过（包含版本号的文件）
+    只处理像 Neptune.exe 这样没有版本号的文件
+    如果文件名末尾包含任何版本号格式（1-4段），都认为是已处理的文件
     """
-    # 根据版本段数构建正则表达式
-    # 支持格式：文件名[分隔符]版本号.exe
-    # 分隔符可以是：_、-、. 或直接连接
-    if segments == 1:
-        pattern = r'^.+[._-]?\d+\.exe$'
-    elif segments == 2:
-        pattern = r'^.+[._-]?\d+\.\d+\.exe$'
-    elif segments == 3:
-        pattern = r'^.+[._-]?\d+\.\d+\.\d+\.exe$'
-    else:  # segments == 4
-        pattern = r'^.+[._-]?\d+\.\d+\.\d+\.\d+\.exe$'
+    # 检查文件名末尾是否包含版本号格式
+    # 支持1-4段版本号，支持多种分隔符（_、-、.）或直接连接
+    # 版本号格式：数字.数字[.数字[.数字]]
     
-    return bool(re.match(pattern, filename, re.IGNORECASE))
+    # 构建匹配1-4段版本号的正则表达式
+    # 格式：文件名[分隔符]版本号.exe
+    patterns = [
+        r'^.+[._-]?\d+\.\d+\.\d+\.\d+\.exe$',  # 4段：x.x.x.x
+        r'^.+[._-]?\d+\.\d+\.\d+\.exe$',        # 3段：x.x.x
+        r'^.+[._-]?\d+\.\d+\.exe$',             # 2段：x.x
+        r'^.+[._-]\d+\.exe$',                   # 1段：x（要求有分隔符，避免误匹配）
+    ]
+    
+    # 检查是否匹配任何版本号格式
+    for pattern in patterns:
+        if re.match(pattern, filename, re.IGNORECASE):
+            return True
+    
+    return False
 
 
 def find_exe_files_in_directory(directory, segments=4):
